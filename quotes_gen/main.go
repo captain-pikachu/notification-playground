@@ -67,7 +67,11 @@ func main() {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.Write(resJson)
+		if _, err := w.Write(resJson); err != nil {
+			logger.Error().Err(err).Send()
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 
 	mux.HandleFunc("POST /v1/setNextQuote", func(w http.ResponseWriter, r *http.Request) {
